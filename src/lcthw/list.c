@@ -89,17 +89,14 @@ void *List_remove(List *list, ListNode *node) {
         // This node is the only element in the list
         list->first = NULL;
         list->last = NULL;
-
     } else if(node == list->first) {
         list->first = node->next;
         check(list->first != NULL, "Somehow got a NULL as the first node");
         list->first->prev = NULL;
-
     } else if(node == list->last) {
         list->last = node->prev;
         check(list->last != NULL, "Somehow got a NULL as the last node");
         list->last->next = NULL;
-
     } else {
         // node falls somewhere in the middle of the list
         ListNode *after = node->next;

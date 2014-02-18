@@ -16,7 +16,6 @@ char *test_create() {
 
 char *test_destroy() {
     List_clear_destroy(list);
-    mu_assert(list == NULL, "Failed to destroy the list");
     return NULL;
 }
 
@@ -34,10 +33,10 @@ char *test_push_pop() {
     char *val = List_pop(list);
     mu_assert(val == test3, "Wrong value on pop");
 
-    *val = List_pop(list);
+    val = List_pop(list);
     mu_assert(val == test2, "Wrong value on pop");
 
-    *val = List_pop(list);
+    val = List_pop(list);
     mu_assert(val == test1, "Wrong value on pop");
     mu_assert(List_count(list) == 0, "Wrong count for the list");
 
