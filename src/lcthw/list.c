@@ -98,7 +98,7 @@ void *List_remove(List *list, ListNode *node) {
     } else if(node == list->last) {
         list->last = node->prev;
         check(list->last != NULL, "Somehow got a NULL as the last node");
-        list->last->next = NULL,
+        list->last->next = NULL;
 
     } else {
         // node falls somewhere in the middle of the list
@@ -113,5 +113,5 @@ void *List_remove(List *list, ListNode *node) {
     free(node);
 
 error:
-    return NULL;
+    return result;
 }
