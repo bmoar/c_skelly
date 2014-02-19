@@ -3,6 +3,7 @@
 #include <assert.h>
 
 static List *list = NULL;
+static List *dest_list = NULL;
 char *test1 = "test1 data";
 char *test2 = "test2 data";
 char *test3 = "test3 data";
@@ -16,6 +17,7 @@ char *test_create() {
 
 char *test_destroy() {
     List_clear_destroy(list);
+    List_clear_destroy(dest_list);
     return NULL;
 }
 
@@ -81,6 +83,37 @@ char *test_shift() {
     return NULL;
 }
 
+char *test_copy() {
+    mu_assert(List_count(list) == 0, "List should be empty");
+
+    List_push(list, test1);
+    List_push(list, test3);
+    List_push(list, test2);
+
+    dest_list = List_copy(list);
+    mu_assert(dest_list != NULL, "List_copy should not fail");
+
+    char *val = List_pop(list);
+    char *dest_val = List_pop(dest_list);
+    mu_assert(val == dest_val, "Copied list should be identical");
+
+    val = List_pop(list);
+    dest_val = List_pop(dest_list);
+    mu_assert(val == dest_val, "Copied list should be identical");
+
+    val = List_pop(list);
+    dest_val = List_pop(dest_list);
+    mu_assert(val == dest_val, "Copied list should be identical");
+
+    // test error cases
+    // null list
+    list = List_copy(NULL);
+    mu_assert(list == NULL, "Copying NULL list should have failed");
+
+    return NULL;
+}
+
+
 char *all_tests() {
     mu_suite_start();
 
@@ -89,6 +122,7 @@ char *all_tests() {
     mu_run_test(test_unshift);
     mu_run_test(test_remove);
     mu_run_test(test_shift);
+    mu_run_test(test_copy);
     mu_run_test(test_destroy);
 
     return NULL;

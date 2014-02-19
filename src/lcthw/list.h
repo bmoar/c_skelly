@@ -38,4 +38,10 @@ void *List_remove(List *list, ListNode *node);
     ListNode *V = NULL;\
     for(V = _node = L->S; _node != NULL; V = _node = _node->M)
 
+/* 
+    Returns a pointer to a deep copy of list
+    On error, returns NULL
+*/
+List *List_copy(List *list);
+
 #endif
