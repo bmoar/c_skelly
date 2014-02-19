@@ -23,7 +23,9 @@ error:
 void List_clear(List *list) {
     check(list != NULL, "Can't clear a NULL list");
     LIST_FOREACH(list, first, next, cur) {
-        free(cur->value);
+        if(cur->value) {
+            free(cur->value);
+        }
     }
 
 error:
@@ -33,8 +35,11 @@ error:
 void List_clear_destroy(List *list) {
     check(list != NULL, "Can't clear and destroy a NULL list");
     LIST_FOREACH(list, first, next, cur) {
+        //free(cur->value);
+        if(cur->value) {
+            free(cur->value);
+        }
         if(cur->prev) {
-            free(cur->prev->value);
             free(cur->prev);
         }
     }
@@ -144,6 +149,18 @@ List *List_copy(List *list) {
     return dest;
 
 error:
-    List_destroy(dest);
+    List_clear_destroy(dest);
     return NULL;
+}
+
+void List_join(List *a, List *b) {
+    check(a != NULL, "List_join list_a can't be NULL");
+    check(b != NULL, "List_join list_b can't be NULL");
+
+    LIST_FOREACH(b, first, next, cur) {
+        List_push(a, cur->value);
+    }
+
+error:
+    return;
 }

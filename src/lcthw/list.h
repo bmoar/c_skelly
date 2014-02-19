@@ -39,9 +39,18 @@ void *List_remove(List *list, ListNode *node);
     for(V = _node = L->S; _node != NULL; V = _node = _node->M)
 
 /* 
-    Returns a pointer to a deep copy of list
-    On error, returns NULL
+ * Returns a pointer to a deep copy of list
+ * On error, returns NULL
 */
+
 List *List_copy(List *list);
+
+/*
+ * Puts list_b on the end of list_a
+ * so the list_a->last = list_b->first->prev
+*/
+
+void List_join(List *a, List *b);
+
 
 #endif

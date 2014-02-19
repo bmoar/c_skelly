@@ -3,7 +3,7 @@
 #include <assert.h>
 
 static List *list = NULL;
-static List *dest_list = NULL;
+static List *list_b = NULL;
 char *test1 = "test1 data";
 char *test2 = "test2 data";
 char *test3 = "test3 data";
@@ -16,8 +16,8 @@ char *test_create() {
 }
 
 char *test_destroy() {
-    List_clear_destroy(list);
-    List_clear_destroy(dest_list);
+    List_destroy(list);
+    List_destroy(list_b);
     return NULL;
 }
 
@@ -90,29 +90,57 @@ char *test_copy() {
     List_push(list, test3);
     List_push(list, test2);
 
-    dest_list = List_copy(list);
-    mu_assert(dest_list != NULL, "List_copy should not fail");
+    list_b = List_copy(list);
+    mu_assert(list_b != NULL, "List_copy should not fail");
 
     char *val = List_pop(list);
-    char *dest_val = List_pop(dest_list);
+    char *dest_val = List_pop(list_b);
     mu_assert(val == dest_val, "Copied list should be identical");
 
     val = List_pop(list);
-    dest_val = List_pop(dest_list);
+    dest_val = List_pop(list_b);
     mu_assert(val == dest_val, "Copied list should be identical");
 
     val = List_pop(list);
-    dest_val = List_pop(dest_list);
+    dest_val = List_pop(list_b);
     mu_assert(val == dest_val, "Copied list should be identical");
 
-    // test error cases
+    // error cases
     // null list
-    list = List_copy(NULL);
-    mu_assert(list == NULL, "Copying NULL list should have failed");
+    List *tmp = List_copy(NULL);
+    mu_assert(tmp == NULL, "Copying NULL list should have failed");
 
     return NULL;
 }
 
+char *test_join() {
+    // setup
+    mu_assert(List_count(list) == 0, "List should be empty");
+    mu_assert(list != NULL, "list shouldn't be null");
+    List_push(list, test1);
+    List_push(list, test2);
+    List_push(list, test3);
+
+    mu_assert(list_b != NULL, "list_b shouldn't be null");
+    List_push(list_b, test3);
+    List_push(list_b, test2);
+    List_push(list_b, test1);
+
+    // normal cases
+
+    List_join(list, list_b);
+    mu_assert(List_count(list) == 6, "Wrong count for joined list");
+    mu_assert(List_last(list) == test1, "Wrong value after join");
+
+
+    // error cases
+    // null lists
+    List_join(NULL, NULL);
+
+    // cleanup
+    return NULL;
+
+}
 
 char *all_tests() {
     mu_suite_start();
@@ -123,6 +151,7 @@ char *all_tests() {
     mu_run_test(test_remove);
     mu_run_test(test_shift);
     mu_run_test(test_copy);
+    mu_run_test(test_join);
     mu_run_test(test_destroy);
 
     return NULL;
