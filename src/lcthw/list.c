@@ -6,7 +6,7 @@ List *List_create() {
 }
 
 void List_destroy(List *list) {
-    check(list != NULL, "Can't destroy a null list");
+    check(list != NULL, "Can't destroy a NULL list");
     LIST_FOREACH(list, first, next, cur) {
         if(cur->prev) {
             free(cur->prev);
@@ -21,7 +21,7 @@ error:
 }
 
 void List_clear(List *list) {
-    check(list != NULL, "Can't clear a null list");
+    check(list != NULL, "Can't clear a NULL list");
     LIST_FOREACH(list, first, next, cur) {
         free(cur->value);
     }
@@ -31,8 +31,19 @@ error:
 }
 
 void List_clear_destroy(List *list) {
-    List_clear(list);
-    List_destroy(list);
+    check(list != NULL, "Can't clear and destroy a NULL list");
+    LIST_FOREACH(list, first, next, cur) {
+        if(cur->prev) {
+            free(cur->prev->value);
+            free(cur->prev);
+        }
+    }
+
+    free(list->last);
+    free(list);
+
+error:
+    return;
 }
 
 void List_push(List *list, void *value) {
