@@ -6,7 +6,8 @@ List *List_create() {
 }
 
 void List_destroy(List *list) {
-    check(list != NULL, "Can't destroy a NULL list");
+    List_check(list);
+
     LIST_FOREACH(list, first, next, cur) {
         if(cur->prev) {
             free(cur->prev);
@@ -21,7 +22,8 @@ error:
 }
 
 void List_clear(List *list) {
-    check(list != NULL, "Can't clear a NULL list");
+    List_check(list);
+
     LIST_FOREACH(list, first, next, cur) {
         if(cur->value) {
             free(cur->value);
@@ -33,7 +35,8 @@ error:
 }
 
 void List_clear_destroy(List *list) {
-    check(list != NULL, "Can't clear and destroy a NULL list");
+    List_check(list);
+
     LIST_FOREACH(list, first, next, cur) {
         //free(cur->value);
         if(cur->value) {
@@ -52,6 +55,7 @@ error:
 }
 
 void List_push(List *list, void *value) {
+    List_check(list);
     ListNode *node = calloc(1, sizeof(ListNode));
     check_mem(node);
 
@@ -73,11 +77,17 @@ error:
 }
 
 void *List_pop(List *list) {
+    List_check(list);
+
     ListNode *node = list->last;
     return node != NULL ? List_remove(list, node) : NULL;
+
+error:
+    return NULL;
 }
 
 void List_unshift(List *list, void *value) {
+    List_check(list);
     ListNode *node = calloc(1, sizeof(ListNode));
     check_mem(node);
 
@@ -99,14 +109,18 @@ error:
 }
 
 void *List_shift(List *list) {
+    List_check(list);
     ListNode *node = list->first;
     return node != NULL ? List_remove(list, node) : NULL;
+
+error:
+    return NULL;
 }
 
 void *List_remove(List *list, ListNode *node) {
+    List_check(list);
     void *result = NULL;
 
-    check(list->first && list->last, "List is empty.");
     check(node, "node can't be NULL");
 
     if(node == list->first && node == list->last) {
@@ -138,7 +152,8 @@ error:
 }
 
 List *List_copy(List *list) {
-    check(list != NULL, "Can't copy a NULL list");
+    List_check(list);
+
     List *dest = List_create();
     check_mem(dest);
 
@@ -154,8 +169,8 @@ error:
 }
 
 void List_join(List *a, List *b) {
-    check(a != NULL, "List_join list_a can't be NULL");
-    check(b != NULL, "List_join list_b can't be NULL");
+    List_check(a);
+    List_check(b);
 
     LIST_FOREACH(b, first, next, cur) {
         List_push(a, cur->value);
@@ -163,4 +178,18 @@ void List_join(List *a, List *b) {
 
 error:
     return;
+}
+
+List *List_split(List *list, ListNode *node) {
+    List_check(list);
+    int split = 0;
+
+    LIST_FOREACH(list, first, next, cur) {
+        // add comparison function for Lists and Nodes
+    }
+
+
+error:
+    return NULL;
+
 }

@@ -34,9 +34,23 @@ void *List_shift(List *list);
 
 void *List_remove(List *list, ListNode *node);
 
+// TODO 
+// add check_list() to move all error handling to function
+// add compare functions for Lists and ListNodes
+
 #define LIST_FOREACH(L, S, M, V) ListNode *_node = NULL;\
     ListNode *V = NULL;\
     for(V = _node = L->S; _node != NULL; V = _node = _node->M)
+
+#define List_check(A)\
+    check(A, "List can't be NULL");\
+    check(List_count(A) >= 0, "Length of list can't be negative");\
+    if(List_count(A) > 0) {\
+        check(List_first(A), "List_count can't be > 0 and List_first() == NULL");\
+        check(List_last(A), "List_count can't be > 0 and List_last() == NULL");}\
+    if(List_count(A) == 0) {\
+        check(!List_first(A), "List_count can't be == 0 and have List_first() node");\
+        check(!List_last(A), "List_count can't be == and have List_last() node");}
 
 /* 
  * Returns a pointer to a deep copy of list
@@ -51,6 +65,12 @@ List *List_copy(List *list);
 */
 
 void List_join(List *a, List *b);
+
+/*
+ * split a list at the given node and return 
+ * a pointer to the split second half of the list
+*/
+List *List_split(List *src, ListNode *node);
 
 
 #endif

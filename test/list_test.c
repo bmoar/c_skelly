@@ -132,6 +132,12 @@ char *test_join() {
     mu_assert(List_count(list) == 6, "Wrong count for joined list");
     mu_assert(List_last(list) == test1, "Wrong value after join");
 
+    List_pop(list);
+    List_pop(list);
+    List_pop(list);
+    List_pop(list);
+    List_pop(list);
+    List_pop(list);
 
     // error cases
     // null lists
@@ -141,6 +147,18 @@ char *test_join() {
     return NULL;
 
 }
+
+char *test_split() {
+
+    mu_assert(List_count(list) == 0, "List should be empty");
+
+    List_push(list, test1);
+    List_push(list, test2);
+    List_push(list, test3);
+
+    return NULL;
+}
+
 
 char *all_tests() {
     mu_suite_start();
@@ -152,6 +170,7 @@ char *all_tests() {
     mu_run_test(test_shift);
     mu_run_test(test_copy);
     mu_run_test(test_join);
+    mu_run_test(test_split);
     mu_run_test(test_destroy);
 
     return NULL;
