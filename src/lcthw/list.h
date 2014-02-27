@@ -71,7 +71,7 @@ void List_join(List *a, List *b);
  * split a list at the given node and return 
  * a pointer to the split second half of the list
 */
-List *List_split(List *src, ListNode *node);
+List *List_split(List *src, void *value);
 
 
 #endif

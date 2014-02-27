@@ -59,7 +59,7 @@ int List_cmp(List *a, List *b) {
     List_check(b);
 
     int equal = 0;
-    int rc, i;
+    int i;
 
     if(a == NULL && b == NULL) {
         equal = 1;
@@ -91,19 +91,17 @@ int List_node_cmp(ListNode *a, ListNode *b) {
 
     if(a == NULL && b == NULL) {
         equal = 1;
-    }
-
-    if(a->next == b->next &&
-       a->prev == b->prev &&
-       a->value == b->value) {
-        equal = 1;
+    } else if(a != NULL && b != NULL) {
+        if(a->next == b->next &&
+           a->prev == b->prev &&
+           a->value == b->value) {
+            equal = 1;
+        }
     }
 
     return equal;
-
-error:
-    return -1;
 }
+
 
 
 
@@ -226,6 +224,7 @@ void List_join(List *a, List *b) {
     List_check(b);
 
     LIST_FOREACH(b, first, next, cur) {
+        debug("derp");
         List_push(a, cur->value);
     }
 
@@ -233,16 +232,31 @@ error:
     return;
 }
 
-List *List_split(List *list, ListNode *node) {
+List *List_split(List *list, void *value) {
     List_check(list);
+
     int split = 0;
+    List *result = List_create();
+    ListNode *temp = NULL;
 
     LIST_FOREACH(list, first, next, cur) {
-        // add comparison function for Lists and Nodes
+        if(cur->prev) {
+            if(cur->prev->value == value) {
+                split = 1;
+                break;
+            } else {
+                temp = List_shift(list);
+                check(temp != NULL, "Temp should exist");
+                List_push(result, temp);
+            }
+        }
     }
 
+    check(split == 1, "Node did not exist in the list");
+
+    return result;
 
 error:
+    List_destroy(result);
     return NULL;
-
 }

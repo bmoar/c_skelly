@@ -188,6 +188,9 @@ char *test_join() {
     List_pop(list);
     List_pop(list);
     List_pop(list);
+    List_pop(list_b);
+    List_pop(list_b);
+    List_pop(list_b);
 
     // error cases
     // null lists
@@ -201,10 +204,33 @@ char *test_join() {
 char *test_split() {
 
     mu_assert(List_count(list) == 0, "List should be empty");
+    mu_assert(List_count(list_b) == 0, "List_b should be empty");
 
+    List_push(list, test1);
     List_push(list, test1);
     List_push(list, test2);
     List_push(list, test3);
+    List_push(list, test3);
+
+    mu_assert(List_count(list) == 5, "List should have 5 elements");
+
+    List *l = NULL;
+
+    l = List_split(list, test2);
+    mu_assert(l != NULL, "Split should have found our value");
+
+    mu_assert(List_count(l) == 2, "List count for split should be 2");
+    mu_assert(List_count(list) == 3, "List count for list should be 3");
+
+    List_pop(l);
+    List_pop(l);
+
+    l = List_split(list, test1);
+    mu_assert(l == NULL, "Should not have found test1 to split on");
+
+    List_pop(list);
+    List_pop(list);
+    List_pop(list);
 
     return NULL;
 }
