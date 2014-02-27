@@ -54,6 +54,59 @@ error:
     return;
 }
 
+int List_cmp(List *a, List *b) {
+    List_check(a);
+    List_check(b);
+
+    int equal = 0;
+    int rc, i;
+
+    if(a == NULL && b == NULL) {
+        equal = 1;
+    } else if(a->count == 0 && b->count == 0) {
+        equal = 1;
+    } else if(a->count == b->count){
+        equal = 1;
+        ListNode *a_cur = List_first(a);
+        ListNode *b_cur = List_first(b);
+        for (i = 0; i < a->count - 1; i++) {
+            if(List_node_cmp(a_cur, b_cur)) {
+                a_cur = a_cur->next;
+                b_cur = b_cur->next;
+            } else {
+                equal = 0;
+                break;
+            }
+        }
+    }
+
+    return equal;
+
+error:
+    return -1;
+}
+
+int List_node_cmp(ListNode *a, ListNode *b) {
+    int equal = 0;
+
+    if(a == NULL && b == NULL) {
+        equal = 1;
+    }
+
+    if(a->next == b->next &&
+       a->prev == b->prev &&
+       a->value == b->value) {
+        equal = 1;
+    }
+
+    return equal;
+
+error:
+    return -1;
+}
+
+
+
 void List_push(List *list, void *value) {
     List_check(list);
     ListNode *node = calloc(1, sizeof(ListNode));

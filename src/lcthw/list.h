@@ -35,8 +35,9 @@ void *List_shift(List *list);
 void *List_remove(List *list, ListNode *node);
 
 // TODO 
-// add check_list() to move all error handling to function
 // add compare functions for Lists and ListNodes
+int List_cmp(List *a, List *b);
+int List_node_cmp(ListNode *a, ListNode *b);
 
 #define LIST_FOREACH(L, S, M, V) ListNode *_node = NULL;\
     ListNode *V = NULL;\
