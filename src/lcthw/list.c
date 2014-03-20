@@ -7,6 +7,7 @@ List *List_create() {
 
 void List_destroy(List *list) {
     List_check(list);
+    check(list, "Can't destroy a NULL list");
 
     LIST_FOREACH(list, first, next, cur) {
         if(cur->prev) {
@@ -23,6 +24,7 @@ error:
 
 void List_clear(List *list) {
     List_check(list);
+    check(list, "Can't clear a NULL list");
 
     LIST_FOREACH(list, first, next, cur) {
         if(cur->value) {
@@ -36,9 +38,9 @@ error:
 
 void List_clear_destroy(List *list) {
     List_check(list);
+    check(list, "Can't clear_destroy a NULL list");
 
     LIST_FOREACH(list, first, next, cur) {
-        //free(cur->value);
         if(cur->value) {
             free(cur->value);
         }
@@ -107,6 +109,7 @@ int List_node_cmp(ListNode *a, ListNode *b) {
 
 void List_push(List *list, void *value) {
     List_check(list);
+    check(list, "Can't push to NULL list");
     ListNode *node = calloc(1, sizeof(ListNode));
     check_mem(node);
 
@@ -129,6 +132,7 @@ error:
 
 void *List_pop(List *list) {
     List_check(list);
+    check(list, "Can't pop from a NULL list");
 
     ListNode *node = list->last;
     return node != NULL ? List_remove(list, node) : NULL;
@@ -139,6 +143,7 @@ error:
 
 void List_unshift(List *list, void *value) {
     List_check(list);
+    check(list, "Can't unshift from a NULL list");
     ListNode *node = calloc(1, sizeof(ListNode));
     check_mem(node);
 
@@ -161,9 +166,10 @@ error:
 
 void *List_shift(List *list) {
     List_check(list);
+    check(list, "Can't shift from a NULL list");
+
     ListNode *node = list->first;
     return node != NULL ? List_remove(list, node) : NULL;
-
 error:
     return NULL;
 }
@@ -204,12 +210,15 @@ error:
 
 List *List_copy(List *list) {
     List_check(list);
+    List *dest = NULL;
 
-    List *dest = List_create();
-    check_mem(dest);
+    if(list) {
+        dest = List_create();
+        check_mem(dest);
 
-    LIST_FOREACH(list, first, next, cur) {
-        List_push(dest, cur->value);
+        LIST_FOREACH(list, first, next, cur) {
+            List_push(dest, cur->value);
+        }
     }
 
     return dest;
@@ -222,9 +231,9 @@ error:
 void List_join(List *a, List *b) {
     List_check(a);
     List_check(b);
+    check(a && b, "Cannot join NULL lists");
 
     LIST_FOREACH(b, first, next, cur) {
-        debug("derp");
         List_push(a, cur->value);
     }
 
@@ -234,6 +243,7 @@ error:
 
 List *List_split(List *list, void *value) {
     List_check(list);
+    check(list, "Can't split a NULL list");
 
     int split = 0;
     List *result = List_create();

@@ -20,12 +20,22 @@ char *test_create() {
 }
 
 char *test_destroy() {
+    // error cases
+    List_destroy(NULL);
+
+    // avg cases
     List_destroy(list);
     List_destroy(list_b);
     return NULL;
 }
 
 char *test_push_pop() {
+    // error cases
+    List_push(NULL, NULL);
+    char *val = List_pop(NULL);
+    mu_assert(val == NULL, "List_pop should have errored");
+
+    // avg cases
     List_push(list, test1);
     mu_assert(List_last(list) == test1, "Wrong last value");
 
@@ -36,7 +46,7 @@ char *test_push_pop() {
     mu_assert(List_last(list) == test3, "Wrong last value");
     mu_assert(List_count(list) == 3, "Wrong count for the list");
 
-    char *val = List_pop(list);
+    val = List_pop(list);
     mu_assert(val == test3, "Wrong value on pop");
 
     val = List_pop(list);
@@ -50,6 +60,10 @@ char *test_push_pop() {
 }
 
 char *test_unshift() {
+    //error cases
+    List_unshift(NULL, NULL);
+
+    // avg cases
     List_unshift(list, test1);
     mu_assert(List_first(list) == test1, "Wrong first value");
 
@@ -75,9 +89,14 @@ char *test_remove() {
 }
 
 char *test_shift() {
+    // error cases
+    char *val = List_shift(NULL);
+    mu_assert(val == NULL, "Shift should have errored here");
+    
+    // avg cases
     mu_assert(List_count(list) != 0, "Wrong count before shift");
 
-    char *val = List_shift(list);
+    val = List_shift(list);
     mu_assert(val == test3, "Wrong value on shift");
 
     val = List_shift(list);
@@ -106,7 +125,11 @@ char *test_list_node_cmp() {
 }
 
 char *test_list_cmp() {
+    // error cases
+    int rc = List_cmp(NULL, NULL);
+    mu_assert(rc == 1, "NULL Lists should be equal");
 
+    // avg cases
     mu_assert(List_count(list) == 0, "Wrong count before List_cmp");
     mu_assert(List_count(list_b) == 0, "Wrong count before List_cmp");
 
@@ -116,7 +139,7 @@ char *test_list_cmp() {
     List_push(list_b, test1);
     List_push(list_b, test2);
 
-    int rc = List_cmp(list, list_b);
+    List_cmp(list, list_b);
     mu_assert(rc == 1, "Lists should be equal here");
 
     List_pop(list);
@@ -134,6 +157,12 @@ char *test_list_cmp() {
 }
 
 char *test_copy() {
+    // edge cases
+    List *tmp = List_copy(NULL);
+    mu_assert(tmp == NULL, "Copying NULL list should have failed");
+
+
+    // avg cases
     mu_assert(List_count(list) == 0, "List should be empty");
 
     List_push(list, test1);
@@ -155,16 +184,14 @@ char *test_copy() {
     dest_val = List_pop(list_b);
     mu_assert(val == dest_val, "Copied list should be identical");
 
-    // error cases
-    // null list
-    List *tmp = List_copy(NULL);
-    mu_assert(tmp == NULL, "Copying NULL list should have failed");
-
     return NULL;
 }
 
 char *test_join() {
-    // setup
+    // edge cases
+    List_join(NULL, NULL);
+
+    // avg cases
     mu_assert(List_count(list) == 0, "List should be empty");
     mu_assert(list != NULL, "list shouldn't be null");
     List_push(list, test1);
@@ -175,8 +202,6 @@ char *test_join() {
     List_push(list_b, test3);
     List_push(list_b, test2);
     List_push(list_b, test1);
-
-    // normal cases
 
     List_join(list, list_b);
     mu_assert(List_count(list) == 6, "Wrong count for joined list");
@@ -192,17 +217,15 @@ char *test_join() {
     List_pop(list_b);
     List_pop(list_b);
 
-    // error cases
-    // null lists
-    List_join(NULL, NULL);
-
-    // cleanup
     return NULL;
 
 }
 
 char *test_split() {
+    List *l = List_split(NULL, NULL);
+    mu_assert(l == NULL, "List_split should have failed here");
 
+    // avg cases
     mu_assert(List_count(list) == 0, "List should be empty");
     mu_assert(List_count(list_b) == 0, "List_b should be empty");
 
@@ -214,7 +237,7 @@ char *test_split() {
 
     mu_assert(List_count(list) == 5, "List should have 5 elements");
 
-    List *l = NULL;
+    l = NULL;
 
     l = List_split(list, test2);
     mu_assert(l != NULL, "Split should have found our value");

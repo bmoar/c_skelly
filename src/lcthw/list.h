@@ -34,8 +34,6 @@ void *List_shift(List *list);
 
 void *List_remove(List *list, ListNode *node);
 
-// TODO 
-// add compare functions for Lists and ListNodes
 int List_cmp(List *a, List *b);
 int List_node_cmp(ListNode *a, ListNode *b);
 
@@ -43,15 +41,17 @@ int List_node_cmp(ListNode *a, ListNode *b);
     ListNode *V = NULL;\
     for(V = _node = L->S; _node != NULL; V = _node = _node->M)
 
+//check(A, "List can't be NULL");
 #define List_check(A)\
-    check(A, "List can't be NULL");\
+    if(A){\
     check(List_count(A) >= 0, "Length of list can't be negative");\
     if(List_count(A) > 0) {\
         check(List_first(A), "List_count can't be > 0 and List_first() == NULL");\
         check(List_last(A), "List_count can't be > 0 and List_last() == NULL");}\
     if(List_count(A) == 0) {\
         check(!List_first(A), "List_count can't be == 0 and have List_first() node");\
-        check(!List_last(A), "List_count can't be == and have List_last() node");}
+        check(!List_last(A), "List_count can't be == and have List_last() node");}\
+    };
 
 /* 
  * Returns a pointer to a deep copy of list
