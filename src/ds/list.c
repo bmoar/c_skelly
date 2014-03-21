@@ -1,5 +1,5 @@
-#include <lcthw/list.h>
-#include <debug.h>
+#include <ds/list.h>
+#include <ds/debug.h>
 
 List *List_create() {
     return calloc(1, sizeof(List));
@@ -103,9 +103,6 @@ int List_node_cmp(ListNode *a, ListNode *b) {
 
     return equal;
 }
-
-
-
 
 void List_push(List *list, void *value) {
     List_check(list);

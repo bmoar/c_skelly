@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <debug.h>
+#include <ds/debug.h>
 
 int main() {
     debug("This is a C skeleton, enjoy");

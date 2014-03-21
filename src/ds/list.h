@@ -1,5 +1,5 @@
-#ifndef lcthw_List_h
-#define lcthw_List_h
+#ifndef ds_List_h
+#define ds_List_h
 
 #include <stdlib.h>
 
@@ -41,7 +41,6 @@ int List_node_cmp(ListNode *a, ListNode *b);
     ListNode *V = NULL;\
     for(V = _node = L->S; _node != NULL; V = _node = _node->M)
 
-//check(A, "List can't be NULL");
 #define List_check(A)\
     if(A){\
     check(List_count(A) >= 0, "Length of list can't be negative");\
