@@ -2,10 +2,11 @@
 #include <assert.h>
 
 DArray *DArray_create(size_t element_size, size_t initial_max) {
-    DArray *array = malloc(sizeof(DArray));
+    DArray *array = NULL;
     check(element_size, "element_size can't be NULL");
     check(initial_max, "initial_max can't be NULL");
 
+    array = malloc(sizeof(DArray));
     check_mem(array);
     DArray_max(array) = initial_max;
     check(DArray_max(array) > 0, "Initial max must be > 0");

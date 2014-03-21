@@ -239,9 +239,11 @@ error:
 }
 
 List *List_split(List *list, void *value) {
-    List *result = List_create();
+    List *result = NULL;
     List_check(list);
     check(list, "Can't split a NULL list");
+
+    result = List_create();
 
     int split = 0;
     ListNode *temp = NULL;
