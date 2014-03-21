@@ -172,8 +172,8 @@ error:
 }
 
 void *List_remove(List *list, ListNode *node) {
-    List_check(list);
     void *result = NULL;
+    List_check(list);
 
     check(node, "node can't be NULL");
 
@@ -239,11 +239,11 @@ error:
 }
 
 List *List_split(List *list, void *value) {
+    List *result = List_create();
     List_check(list);
     check(list, "Can't split a NULL list");
 
     int split = 0;
-    List *result = List_create();
     ListNode *temp = NULL;
 
     LIST_FOREACH(list, first, next, cur) {
