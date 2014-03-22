@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <ds/debug.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define mu_suite_start() char *message = NULL
 

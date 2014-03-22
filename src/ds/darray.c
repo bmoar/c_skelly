@@ -81,6 +81,7 @@ void DArray_destroy(DArray *array) {
         if(array->contents) {
             free(array->contents);
         }
+        free(array);
     }
 
 error:

@@ -17,7 +17,7 @@ char *test_create() {
 }
 
 char *test_destroy() {
-    DArray_destroy(array);
+    DArray_clear_destroy(array);
 
     return NULL;
 }
@@ -96,7 +96,47 @@ char *test_push_pop() {
     return NULL;
 }
 
+char *test_push_performance() {
+    int i = 0;
+    int rc = 0;
+    mu_assert(DArray_count(array) == 1, "Should be empty DArray");
+
+    for(i = 0; i < 1000000; i++) {
+        int *val = DArray_new(array);
+        *val = 666;
+        rc = DArray_push(array, val);
+        mu_assert(rc != -1, "Push should not have failed");
+    }
+
+    return NULL;
+}
+
+char *test_iteration_performance() {
+    int i = 0;
+    for(i = 1; i < DArray_count(array); i++) {
+        int *val = DArray_get(array, i);
+        mu_assert(val != NULL, "Contents shouldn't be NULL here");
+        mu_assert(*val == 666, "Contents should be iterable");
+    }
+
+    return NULL;
+}
+
+char *test_pop_performance() {
+    int i = 0;
+    int n = DArray_count(array);
+    for(i = 1; i < n; i++) {
+        int *val = DArray_pop(array);
+        mu_assert(*val == 666, "Contents should be the same during pop.");
+        DArray_free(val);
+    }
+
+    return NULL;
+}
+
 char *all_tests() {
+    time_t start_time = 0;
+    time_t end_time = 0;
     mu_suite_start();
 
     mu_run_test(test_create);
@@ -106,6 +146,23 @@ char *all_tests() {
     mu_run_test(test_remove);
     mu_run_test(test_expand_contract);
     mu_run_test(test_push_pop);
+    
+    //performance tests
+    start_time = time(NULL);
+    mu_run_test(test_push_performance);
+    end_time = time(NULL);
+    log_info("Test completed in %f seconds", difftime(end_time, start_time)); 
+
+    start_time = time(NULL);
+    mu_run_test(test_iteration_performance);
+    end_time = time(NULL);
+    log_info("Test completed in %f seconds", difftime(end_time, start_time));
+
+    start_time = time(NULL);
+    mu_run_test(test_pop_performance);
+    end_time = time(NULL);
+    log_info("Test completed in %f seconds", difftime(end_time, start_time));
+
     mu_run_test(test_destroy);
 
     return NULL;
