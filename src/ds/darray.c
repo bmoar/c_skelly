@@ -3,8 +3,6 @@
 
 DArray *DArray_create(size_t element_size, size_t initial_max) {
     DArray *array = NULL;
-    check(element_size, "element_size can't be NULL");
-    check(initial_max, "initial_max can't be NULL");
 
     array = malloc(sizeof(DArray));
     check_mem(array);
