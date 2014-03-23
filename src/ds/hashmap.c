@@ -220,6 +220,8 @@ error:
 }
 
 int Hashmap_traverse(Hashmap *map, Hashmap_traverse_cb traverse_cb) {
+    check(map, "Can't traverse a NULL hashmap");
+    check(traverse_cb, "Can't have a NULL traverse_cb function");
     int i = 0;
     int j = 0;
     int rc = 0;
@@ -238,6 +240,9 @@ int Hashmap_traverse(Hashmap *map, Hashmap_traverse_cb traverse_cb) {
     }
 
     return 0;
+
+error:
+    return 1;
 }
 
 void *Hashmap_delete(Hashmap *map, void *key) {
