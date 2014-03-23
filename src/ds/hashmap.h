@@ -36,8 +36,17 @@ int Hashmap_set(Hashmap *map, void *key, void *data);
  */
 void *Hashmap_get(Hashmap *map, void *key);
 
+/*
+ * Iterate through each { key : value } in the hashmap
+ * passing each node to the traverse_cb callback function
+ */
 int Hashmap_traverse(Hashmap *map, Hashmap_traverse_cb traverse_cb);
 
+/*
+ * Remove a { key : value } from the map
+ * returns a pointer to the value on success,
+ * NULL on error
+ */
 void *Hashmap_delete(Hashmap *map, void *key);
 
 /*
