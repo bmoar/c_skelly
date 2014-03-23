@@ -11,9 +11,7 @@ static int integer_compare(const void *a, const void *b) {
 }
 
 static int qsort_int_compare(const void **a, const void **b) {
-    int *derp = *(int *)a;
-    int *herp = *(int *)b;
-    return *derp - *herp;
+    return *(int *)*a - *(int *)*b;
 }
 
 char *test_create() {
