@@ -199,6 +199,9 @@ error:
 }
 
 void *Hashmap_get(Hashmap *map, void *key) {
+    check(map, "Can't get from a NULL map");
+    check(key, "Can't get a NULL key from map");
+
     uint32_t hash = 0;
     DArray *bucket = Hashmap_find_bucket(map, key, 0, &hash);
     if(!bucket) {

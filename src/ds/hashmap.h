@@ -28,6 +28,12 @@ Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash hash);
 void Hashmap_destroy(Hashmap *map);
 
 int Hashmap_set(Hashmap *map, void *key, void *data);
+
+/*
+ * Get the value stored for key
+ * returns a void * to the data if found
+ * returns NULL if not found or error
+ */
 void *Hashmap_get(Hashmap *map, void *key);
 
 int Hashmap_traverse(Hashmap *map, Hashmap_traverse_cb traverse_cb);
