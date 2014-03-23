@@ -101,6 +101,39 @@ error:
     return -1;
 }
 
+int DArray_find(DArray *array, void *el, DArray_compare cmp) {
+    check(array != NULL, "Can't find in a NULL array");
+    check(cmp != NULL, "Can't have a NULL compare function");
+    check(el != NULL, "Can't find a NULL element");
+
+    if(DArray_count(array) == 0) {
+        // empty array
+        return -1;
+    }
+
+    int high = DArray_count(array) - 1;
+    int low = 0;
+
+    while(low <= high) {
+        int middle = low + (high - low) / 2;
+        int rc = cmp(el, DArray_get(array, middle));
+
+
+        if(rc == 0) {
+            return middle;
+        } else if (rc > 0) {
+            low = middle + 1;
+        } else if (rc < 0) {
+            high = middle - 1;
+        }
+    }
+
+    return -1;
+
+error:
+    return -1;
+}
+
 int DArray_push(DArray *array, void *el) {
     check(array != NULL, "Can't push to a NULL array");
 

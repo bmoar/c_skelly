@@ -1,9 +1,20 @@
 #include "minunit.h"
 #include <ds/darray.h>
+#include <ds/darray_algos.h>
 
 static DArray *array = NULL;
 static int *val1 = NULL;
 static int *val2 = NULL;
+
+static int integer_compare(const void *a, const void *b) {
+    return *(int *)a - *(int *)b;
+}
+
+static int qsort_int_compare(const void **a, const void **b) {
+    int *derp = *(int *)a;
+    int *herp = *(int *)b;
+    return *derp - *herp;
+}
 
 char *test_create() {
     array = DArray_create(sizeof(int), 100);
@@ -134,6 +145,39 @@ char *test_pop_performance() {
     return NULL;
 }
 
+char *test_find() {
+    DArray_clear_destroy(array);
+    array = DArray_create(sizeof(int), 100);
+    int i = 0;
+    int rc = 0;
+    for(i = 0; i < 1001; i++) {
+        int *val = DArray_new(array);
+        *val = 666;
+        rc = DArray_push(array, val);
+        mu_assert(rc != -1, "Push should not have failed");
+    }
+
+    // element to find
+    int *val = DArray_new(array);
+    *val = 777;
+    DArray_set(array, 501, val);
+    int *get = DArray_get(array, 501);
+    mu_assert(*get == 777, "Element to find should be here");
+
+    rc = DArray_qsort(array, (DArray_compare)qsort_int_compare);
+    mu_assert(rc == 0, "DArray should have sorted");
+
+    rc = DArray_find(array, get, integer_compare);
+    mu_assert(rc != -1, "Element should exist in the array");
+    mu_assert(rc == 1000, "Element should be found by binary search here");
+
+    int derp = 42134;
+    rc = DArray_find(array, &derp, integer_compare);
+    mu_assert(rc == -1, "Element should not exist in the array");
+
+    return NULL;
+}
+
 char *all_tests() {
     time_t start_time = 0;
     time_t end_time = 0;
@@ -163,6 +207,7 @@ char *all_tests() {
     end_time = time(NULL);
     log_info("Test completed in %f seconds", difftime(end_time, start_time));
 
+    mu_run_test(test_find);
     mu_run_test(test_destroy);
 
     return NULL;

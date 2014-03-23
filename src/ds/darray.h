@@ -21,6 +21,7 @@ typedef struct DArray {
 #define DArray_max(A) ((A)->max)
 #define DArray_free(E) free((E))
 
+typedef int (*DArray_compare)(const void *a, const void *b);
 /*
  * Create a new DArray with elements of size_t and the number
  * of max elements set to initial_max
@@ -51,6 +52,13 @@ void DArray_destroy(DArray *array);
  * Expand the DArray to hold more elements
  */
 int DArray_expand(DArray *array);
+
+/*
+ * Binary search for an element
+ * returns the position in the DArray of the element if found,
+ * otherwise returns -1
+ */
+int DArray_find(DArray *array, void *el, DArray_compare cmp);
 
 /*
  * Pop off data from the DArray
