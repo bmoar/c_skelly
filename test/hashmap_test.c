@@ -62,6 +62,7 @@ char *test_get_set() {
 }
 
 char *test_traverse() {
+    traverse_called = 0;
     int rc = Hashmap_traverse(map, traverse_good_cb);
     mu_assert(rc == 0, "Failed to traverse");
     mu_assert(traverse_called == 3, "Wrong count traverse");
@@ -96,11 +97,25 @@ char *test_delete() {
     return NULL;
 }
 
+char *test_create_SFH() {
+    map = Hashmap_create(NULL, SuperFashHash);
+    mu_assert(map != NULL, "Failed to create map.");
+    
+    return NULL;
+}
+
 char *all_tests() {
 
     mu_suite_start();
 
     mu_run_test(test_create);
+    mu_run_test(test_get_set);
+    mu_run_test(test_traverse);
+    mu_run_test(test_delete);
+    mu_run_test(test_destroy);
+
+    //SFH tests
+    mu_run_test(test_create_SFH);
     mu_run_test(test_get_set);
     mu_run_test(test_traverse);
     mu_run_test(test_delete);
