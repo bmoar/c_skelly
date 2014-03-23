@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <ds/darray.h>
 
-
 #define DEFAULT_NUMBER_OF_BUCKETS 100
 
 typedef int (*Hashmap_compare)(void *a, void *b);
@@ -24,9 +23,22 @@ typedef struct HashmapNode {
 
 typedef int (*Hashmap_traverse_cb)(HashmapNode *node);
 
+/*
+ * Return a pointer to a new Hashmap.
+ * Hashmap_compare is a function that returns an int. Default is bstrcmp.
+ * Hashmap_hash is a hashing function. Default is SuperFastHash (SFH)
+ */
 Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash hash);
+
+/*
+ * Frees all { key : value }, buckets, and the hashmap itself
+ */
 void Hashmap_destroy(Hashmap *map);
 
+/*
+ * Set the key to data, adds the key to the hashmap
+ * if it doesn't exist. Returns 0 on success, -1 on error
+ */
 int Hashmap_set(Hashmap *map, void *key, void *data);
 
 /*
@@ -49,8 +61,12 @@ int Hashmap_traverse(Hashmap *map, Hashmap_traverse_cb traverse_cb);
  */
 void *Hashmap_delete(Hashmap *map, void *key);
 
+/* 
+ * Hash functions
+ */
+
 /*
- * Def for Paul Hsieh's SuperFashHash (SFH)
+ * Paul Hsieh's SuperFashHash (SFH)
  */
 #undef get16bits
 #if (defined(__GNUC__) && defined(__i386__)) || defined(__WATCOMC__) \
@@ -64,6 +80,11 @@ void *Hashmap_delete(Hashmap *map, void *key);
 #endif
 
 uint32_t SuperFashHash(void *a);
-// end SFH defines
+// end SFH 
+
+/*
+ * Bob Jenkins hash from wikipedia
+ */
+uint32_t jenkins_hash(void *a);
 
 #endif

@@ -8,10 +8,7 @@ static int default_compare(void *a, void *b) {
     return bstrcmp((bstring)a, (bstring)b);
 }
 
-/*
- * Bob Jenkins hash from wikipedia
- */
-static uint32_t default_hash(void *a) {
+uint32_t jenkins_hash(void *a) {
     size_t len = blength((bstring)a);
     char *key = bdata((bstring)a);
     uint32_t hash = 0;
@@ -83,7 +80,7 @@ Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash hash) {
     check_mem(map);
 
     map->compare = compare == NULL ? default_compare : compare;
-    map->hash = hash == NULL ? default_hash : hash;
+    map->hash = hash == NULL ? SuperFashHash : hash;
     map->buckets = DArray_create(sizeof(DArray *), DEFAULT_NUMBER_OF_BUCKETS);
     map->buckets->end = map->buckets->max; // fake out expanding it
     check_mem(map->buckets);
