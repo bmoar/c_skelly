@@ -8,6 +8,10 @@ static int default_compare(void *a, void *b) {
     return bstrcmp((bstring)a, (bstring)b);
 }
 
+static int qsort_default_compare(void **a, void **b) {
+    return bstrcmp(*(bstring *)*a, *(bstring *)*b);
+}
+
 uint32_t jenkins_hash(void *a) {
     size_t len = blength((bstring)a);
     char *key = bdata((bstring)a);
@@ -154,6 +158,7 @@ error:
 static inline int Hashmap_get_node(Hashmap *map, uint32_t hash, DArray *bucket, void *key) {
     int i = 0;
 
+    // binary search here
     for(i = 0; i < DArray_end(bucket); i++) {
         HashmapNode *node = DArray_get(bucket, i);
         if(node->hash == hash && map->compare(node->key, key) == 0) {
@@ -187,7 +192,9 @@ int Hashmap_set(Hashmap *map, void *key, void *data) {
         HashmapNode *node = HashmapNode_node_create(hash, key, data);
         check_mem(node);
         DArray_push(bucket, node);
+        qsort(bucket->contents, DArray_count(bucket), sizeof(void *), (DArray_compare)qsort_default_compare);
     }
+
 
     return 0;
 
@@ -271,6 +278,7 @@ void *Hashmap_delete(Hashmap *map, void *key) {
         DArray_set(bucket, i, ending);
     }
 
+    qsort(bucket->contents, DArray_count(bucket), sizeof(void *), (DArray_compare)qsort_default_compare);
     return data;
 
 error:
