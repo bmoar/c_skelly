@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <ds/darray.h>
 
-#define DEFAULT_NUMBER_OF_BUCKETS 1
+#define DEFAULT_NUMBER_OF_BUCKETS 100
 
 typedef int (*Hashmap_compare)(void *a, void *b);
 typedef uint32_t (*Hashmap_hash)(void *key);
@@ -27,8 +27,9 @@ typedef int (*Hashmap_traverse_cb)(HashmapNode *node);
  * Return a pointer to a new Hashmap.
  * Hashmap_compare is a function that returns an int. Default is bstrcmp.
  * Hashmap_hash is a hashing function. Default is SuperFastHash (SFH)
+ * buckets is the number of buckets to start with. If NULL, default is 100 buckets
  */
-Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash hash);
+Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash hash, int buckets);
 
 /*
  * Frees all { key : value }, buckets, and the hashmap itself

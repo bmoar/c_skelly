@@ -93,13 +93,15 @@ uint32_t SuperFashHash(void *a) {
     return hash;
 }
 
-Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash hash) {
+Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash hash, int buckets) {
     Hashmap *map = calloc(1, sizeof(Hashmap));
     check_mem(map);
 
+    size_t num_buckets = buckets <= 0 ? DEFAULT_NUMBER_OF_BUCKETS : buckets;
+
     map->compare = compare == NULL ? default_compare : compare;
     map->hash = hash == NULL ? SuperFashHash : hash;
-    map->buckets = DArray_create(sizeof(DArray *), DEFAULT_NUMBER_OF_BUCKETS);
+    map->buckets = DArray_create(sizeof(DArray *), num_buckets);
     map->buckets->end = map->buckets->max; // fake out expanding it
     check_mem(map->buckets);
 
@@ -169,7 +171,7 @@ error:
     return NULL;
 }
 
-static inline int Hashmap_get_node(Hashmap *map, uint32_t hash, DArray *bucket, void *key) {
+static inline int Hashmap_get_node(DArray *bucket, void *key) {
     int rc = 0;
 
     rc = DArray_find(bucket, key, (DArray_compare)bucket_compare);
@@ -188,7 +190,7 @@ int Hashmap_set(Hashmap *map, void *key, void *data) {
     check(bucket, "Error can't create bucket");
 
     // check if key already exists in Hashmap
-    int rc = Hashmap_get_node(map, hash, bucket, key);
+    int rc = Hashmap_get_node(bucket, key);
 
     if(rc >= 0) {
         // key already in hashmap
@@ -219,7 +221,7 @@ void *Hashmap_get(Hashmap *map, void *key) {
         return NULL;
     }
 
-    int i = Hashmap_get_node(map, hash, bucket, key);
+    int i = Hashmap_get_node(bucket, key);
     if(i < 0) {
         return NULL;
     }
@@ -269,7 +271,7 @@ void *Hashmap_delete(Hashmap *map, void *key) {
         return NULL;
     }
 
-    int i = Hashmap_get_node(map, hash, bucket, key);
+    int i = Hashmap_get_node(bucket, key);
     if(i == -1) {
         return NULL;
     }

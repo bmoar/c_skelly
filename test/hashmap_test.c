@@ -30,7 +30,7 @@ static int traverse_fail_cb(HashmapNode *node) {
 }
 
 char *test_create() {
-    map = Hashmap_create(NULL, NULL);
+    map = Hashmap_create(NULL, NULL, 0);
     mu_assert(map != NULL, "Failed to create map.");
 
     return NULL;
@@ -98,7 +98,7 @@ char *test_delete() {
 }
 
 char *test_create_SFH() {
-    map = Hashmap_create(NULL, SuperFashHash);
+    map = Hashmap_create(NULL, SuperFashHash, 0);
     mu_assert(map != NULL, "Failed to create map.");
     
     return NULL;
