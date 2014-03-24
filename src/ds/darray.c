@@ -118,7 +118,6 @@ int DArray_find(DArray *array, void *el, DArray_compare cmp) {
         int middle = low + (high - low) / 2;
         int rc = cmp(el, DArray_get(array, middle));
 
-
         if(rc == 0) {
             return middle;
         } else if (rc > 0) {

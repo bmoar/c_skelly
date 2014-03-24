@@ -110,23 +110,53 @@ char *test_push_performance() {
     int rc = 0;
     mu_assert(DArray_count(array) == 1, "Should be empty DArray");
 
-    for(i = 0; i < 1000000; i++) {
+    for(i = 0; i < 100000000; i++) {
         int *val = DArray_new(array);
         *val = 666;
         rc = DArray_push(array, val);
         mu_assert(rc != -1, "Push should not have failed");
     }
 
+    int *find_me = DArray_get(array, 100000000);
+    *find_me = 777;
+
+    // why is there a hole in the darray :/
+    int *wtf = DArray_new(array);
+    *wtf = 666;
+    DArray_set(array, 0, wtf);
+
     return NULL;
 }
 
 char *test_iteration_performance() {
     int i = 0;
+    int found = 0;
     for(i = 1; i < DArray_count(array); i++) {
         int *val = DArray_get(array, i);
         mu_assert(val != NULL, "Contents shouldn't be NULL here");
-        mu_assert(*val == 666, "Contents should be iterable");
+        if(*val == 777) {
+            debug("i : %d", i);
+            found = 1;
+            break;
+        }
     }
+
+    mu_assert(found == 1, "Should have found element");
+
+    return NULL;
+}
+
+char *test_find_performance() {
+    int rc = 0;
+
+    // assume darray is sorted
+    mu_assert(rc == 0, "DArray should have sorted");
+
+    int *find_me = DArray_get(array, 100000000);
+    mu_assert(*find_me == 777, "find_me should exist in array");
+
+    rc = DArray_find(array, find_me, integer_compare);
+    mu_assert(rc != -1, "Element should exist in the array");
 
     return NULL;
 }
@@ -136,7 +166,7 @@ char *test_pop_performance() {
     int n = DArray_count(array);
     for(i = 1; i < n; i++) {
         int *val = DArray_pop(array);
-        mu_assert(*val == 666, "Contents should be the same during pop.");
+        mu_assert(*val == 666 || *val == 777, "Contents should be the same during pop.");
         DArray_free(val);
     }
 
@@ -197,6 +227,11 @@ char *all_tests() {
 
     start_time = time(NULL);
     mu_run_test(test_iteration_performance);
+    end_time = time(NULL);
+    log_info("Test completed in %f seconds", difftime(end_time, start_time));
+
+    start_time = time(NULL);
+    mu_run_test(test_find_performance);
     end_time = time(NULL);
     log_info("Test completed in %f seconds", difftime(end_time, start_time));
 

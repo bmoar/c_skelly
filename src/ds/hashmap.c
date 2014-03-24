@@ -9,7 +9,21 @@ static int default_compare(void *a, void *b) {
 }
 
 static int qsort_default_compare(void **a, void **b) {
-    return bstrcmp(*(bstring *)*a, *(bstring *)*b);
+    // a and b are pointers to HashMapNode pointers
+    HashmapNode *node_a = (HashmapNode *)*a;
+    HashmapNode *node_b = (HashmapNode *)*b;
+    bstring key_a = (bstring)node_a->key;
+    bstring key_b = (bstring)node_b->key;
+    return bstrcmp(key_a, key_b);
+}
+
+static int bucket_compare(void *a, void *b) {
+    // a is a bstring, b is a HashmapNode
+    HashmapNode *node_b = (HashmapNode *)b;
+    bstring key_a = (bstring)a;
+    bstring key_b = (bstring)node_b->key;
+
+    return bstrcmp(key_a, key_b);
 }
 
 uint32_t jenkins_hash(void *a) {
@@ -156,17 +170,10 @@ error:
 }
 
 static inline int Hashmap_get_node(Hashmap *map, uint32_t hash, DArray *bucket, void *key) {
-    int i = 0;
+    int rc = 0;
 
-    // binary search here
-    for(i = 0; i < DArray_end(bucket); i++) {
-        HashmapNode *node = DArray_get(bucket, i);
-        if(node->hash == hash && map->compare(node->key, key) == 0) {
-            return i;
-        }
-    }
-
-    return -1;
+    rc = DArray_find(bucket, key, (DArray_compare)bucket_compare);
+    return rc;
 }
 
 int Hashmap_set(Hashmap *map, void *key, void *data) {
