@@ -56,14 +56,13 @@ char *test_binstr_performance() {
 
 char *test_find_performance() {
     int i = 0;
-    int found_at = 0;
     unsigned long find_count = 0;
     time_t elapsed = 0;
     time_t start = time(NULL);
 
     do {
         for(i = 0; i < 1000; i++) {
-            found_at = String_find(&IN_STR, &ALPHA);
+            String_find(&IN_STR, &ALPHA);
             find_count++;
         }
         elapsed = time(NULL) - start;
