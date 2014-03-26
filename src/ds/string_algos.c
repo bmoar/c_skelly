@@ -51,7 +51,7 @@ int String_find(bstring in, bstring to_find) {
     ssize_t hlen = blength(in);
     const unsigned char *needle = (const unsigned char *)bdata(to_find);
     ssize_t nlen = blength(to_find);
-    size_t skip_chars[UCHAR_MAX + 1] = {0};
+    size_t skip_chars[UCHAR_MAX + 1];
 
     String_setup_skip_chars(skip_chars, needle, nlen);
 
