@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <assert.h>
 
 #include <ds/bstrlib.h>
 #include <ds/debug.h>
@@ -24,8 +25,13 @@ error:
 }
 
 static int BSTree_destroy_cb(BSTreeNode *node) {
+    check(node, "Tried to destroy a NULL node");
     free(node);
+
     return 0;
+
+error:
+    return 1;
 }
 
 void BSTree_destroy(BSTree *map) {
@@ -36,6 +42,7 @@ void BSTree_destroy(BSTree *map) {
 }
 
 static inline BSTreeNode *BSTreeNode_create(BSTreeNode *parent, void *key, void *data) {
+    check(key, "Can't create a node with a NULL key");
     BSTreeNode *node = calloc(1, sizeof(BSTreeNode));
     check_mem(node);
 
@@ -49,6 +56,9 @@ error:
 }
 
 static inline void BSTree_setnode(BSTree *map, BSTreeNode *node, void *key, void *data) {
+    assert(map != NULL);
+    assert(node != NULL);
+
     int cmp = map->compare(node->key, key);
 
     if(cmp <= 0) {
@@ -67,6 +77,9 @@ static inline void BSTree_setnode(BSTree *map, BSTreeNode *node, void *key, void
 }
 
 int BSTree_set(BSTree *map, void *key, void *data) {
+    check(map, "Tried to set in a NULL map");
+    check(key, "Tried to set a NULL key");
+
     if(map->root == NULL) {
         map->root = BSTreeNode_create(NULL, key, data);
         check_mem(map->root);
@@ -77,10 +90,12 @@ int BSTree_set(BSTree *map, void *key, void *data) {
     return 0;
 
 error:
-    return -1;
+    return 1;
 }
 
 static inline BSTreeNode *BSTree_getnode(BSTree *map, BSTreeNode *node, void *key) {
+    assert(map != NULL);
+    assert(node != NULL);
     int cmp = map->compare(node->key, key);
 
     if(cmp == 0) {
@@ -101,15 +116,23 @@ static inline BSTreeNode *BSTree_getnode(BSTree *map, BSTreeNode *node, void *ke
 }
 
 void *BSTree_get(BSTree *map, void *key) {
+    check(map, "Tried to get from a NULL map");
+    check(key, "Tried to get a NULL key from map");
+
     if(map->root == NULL) {
         return NULL;
     } else {
         BSTreeNode *node = BSTree_getnode(map, map->root, key);
         return node == NULL ? NULL : node->data;
     }
+
+error:
+    return NULL;
 }
 
 static inline int BSTree_traverse_nodes(BSTreeNode *node, BSTree_traverse_cb traverse_cb) {
+    assert(node != NULL);
+    assert(traverse_cb != NULL);
     int rc = 0;
 
     if(node->left) {
@@ -130,14 +153,22 @@ static inline int BSTree_traverse_nodes(BSTreeNode *node, BSTree_traverse_cb tra
 }
 
 int BSTree_traverse(BSTree *map, BSTree_traverse_cb traverse_cb) {
+    check(map, "Tried to traverse NULL map");
+    check(traverse_cb, "Tried to use a NULL traverse_cb");
+
     if(map->root) {
         return BSTree_traverse_nodes(map->root, traverse_cb);
     }
 
     return 0;
+
+error:
+    return 1;
 }
 
 static inline BSTreeNode *BSTree_find_min(BSTreeNode *node) {
+    assert(node != NULL);
+
     while(node->left) {
         node = node->left;
     }
@@ -146,6 +177,9 @@ static inline BSTreeNode *BSTree_find_min(BSTreeNode *node) {
 }
 
 static inline void BSTree_replace_node_in_parent(BSTree *map, BSTreeNode *node, BSTreeNode *new_value) {
+    assert(map != NULL);
+    assert(node != NULL);
+
     if(node->parent) {
         if(node == node->parent->left) {
             node->parent->left = new_value;
@@ -162,12 +196,17 @@ static inline void BSTree_replace_node_in_parent(BSTree *map, BSTreeNode *node, 
 }
 
 static inline void BSTree_swap(BSTreeNode *a, BSTreeNode *b) {
+    assert(a != NULL);
+    assert(b != NULL);
+
     void *temp = NULL;
     temp = b->key; b->key = a->key; a->key = temp;
     temp = b->data; b->data = a->data; a->data = temp;
 }
 
 static inline BSTreeNode *BSTree_node_delete(BSTree *map, BSTreeNode *node, void *key) {
+    assert(map != NULL);
+    assert(node != NULL);
     int cmp = map->compare(node->key, key);
 
     if(cmp < 0) {
@@ -204,6 +243,9 @@ static inline BSTreeNode *BSTree_node_delete(BSTree *map, BSTreeNode *node, void
 }
 
 void *BSTree_delete(BSTree *map, void *key) {
+    check(map, "Tried to delete from a NULL map");
+    check(key, "Tried to delete a NULL key");
+
     void *data = NULL;
 
     if(map->root) {
@@ -216,4 +258,7 @@ void *BSTree_delete(BSTree *map, void *key) {
     }
 
     return data;
+
+error:
+    return NULL;
 }

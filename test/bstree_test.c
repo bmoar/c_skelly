@@ -40,15 +40,30 @@ char *test_create() {
 }
 
 char *test_destroy() {
+    BSTree_destroy(NULL);
     BSTree_destroy(map);
 
     return NULL;
 }
 
 char *test_get_set() {
-    int rc = BSTree_set(map, &test1, &expect1);
+    // edge cases/errors
+    int rc = BSTree_set(NULL, NULL, NULL);
+    mu_assert(rc == 1, "Should have failed on NULL");
+
+    rc = BSTree_set(map, NULL, NULL);
+    mu_assert(rc == 1, "Should have failed on NULL");
+
+    bstring result = BSTree_get(NULL, NULL);
+    mu_assert(result == NULL, "Should not be able to get from NULL");
+
+    result = BSTree_get(map, NULL);
+    mu_assert(result == NULL, "Should not be able to get from NULL");
+
+    // avg. cases
+    rc = BSTree_set(map, &test1, &expect1);
     mu_assert(rc == 0, "Failed to set &test1");
-    bstring result = BSTree_get(map, &test1);
+    result = BSTree_get(map, &test1);
     mu_assert(result == &expect1, "Wrong value for test1.");
 
     rc = BSTree_set(map, &test2, &expect2);
@@ -65,7 +80,15 @@ char *test_get_set() {
 }
 
 char *test_traverse() {
-    int rc = BSTree_traverse(map, traverse_good_cb);
+    // edge/error cases
+    int rc = BSTree_traverse(NULL, NULL);
+    mu_assert(rc == 1, "Should not traverse NULL map");
+
+    rc = BSTree_traverse(map, NULL);
+    mu_assert(rc == 1, "Should not traverse NULL map");
+
+    // avg. cases
+    rc = BSTree_traverse(map, traverse_good_cb);
     mu_assert(rc == 0, "Failed to traverse");
     mu_assert(traverse_called == 3, "Wrong count traverse");
 
@@ -79,7 +102,15 @@ char *test_traverse() {
 
 char *test_delete()
 {
-    bstring deleted = (bstring)BSTree_delete(map, &test1);
+    // edge/error cases
+    bstring deleted = (bstring)BSTree_delete(NULL, NULL);
+    mu_assert(deleted == NULL, "Should have failed to delete from NULL map");
+
+    deleted = (bstring)BSTree_delete(map, NULL);
+    mu_assert(deleted == NULL, "Should have failed to delete NULL entry");
+
+    // avg. cases
+    deleted = (bstring)BSTree_delete(map, &test1);
     mu_assert(deleted != NULL, "Got NULL on delete.");
     mu_assert(deleted == &expect1, "Should get test1");
     bstring result = BSTree_get(map, &test1);
