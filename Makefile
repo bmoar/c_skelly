@@ -20,8 +20,8 @@ ifeq ($(UNAME), MINGW32_NT-6.1)
 endif
 
 
-CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude -DNDEBUG $(OPTFLAGS)
-LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS) -lrt -lm
+CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude -DNDEBUG -lm -pthread $(OPTFLAGS)
+LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS) -lrt -lm -pthread
 PREFIX?=/usr/local
 
 HEADERS=$(wildcard src/**/*.h src/*.h)
@@ -47,10 +47,9 @@ SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
 # The Target Build
 all: $(TARGET) $(SO_TARGET) test $(PROGRAMS)
 
-dev: CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS) 
+dev: CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude -lm -pthread $(OPTFLAGS) 
 dev: all
 
-#$(TARGET): CFLAGS += -fPIC
 $(TARGET): build $(HEADERS) $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@

@@ -142,7 +142,7 @@ char *all_tests() {
 
     mu_run_test(test_find_and_scan);
 
-#if 1
+#if 0
     mu_run_test(test_samples);
 #endif
 #if 0
