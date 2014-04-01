@@ -1,11 +1,13 @@
+#include <time.h>
 #include "minunit.h"
 #include <ds/string_algos.h>
 #include <ds/bstrlib.h>
-#include <time.h>
+#include <ds/stats.h>
 
 struct tagbstring IN_STR = bsStatic("I have ALPHA beta ALPHA and oranges ALPHA");
 struct tagbstring ALPHA = bsStatic("ALPHA");
 const int TEST_TIME = 1;
+const int SAMPLE_COUNT = 10;
 
 char *test_find_and_scan() {
     StringScanner *scan = StringScanner_create(&IN_STR);
@@ -74,7 +76,6 @@ char *test_find_performance() {
     return NULL;
 }
 
-
 char *test_scan_performance() {
     int i = 0;
     int found_at = 0;
@@ -103,11 +104,47 @@ char *test_scan_performance() {
     return NULL;
 }
 
+char *test_samples() {
+    Stats *st = Stats_create();
+    int i = 0;
+    int j = 0;
+    int found_at = 0;
+    unsigned long find_count = 0;
+    time_t elapsed = 0;
+    time_t start = time(NULL);
+    StringScanner *scan = StringScanner_create(&IN_STR);
+
+    for (i = 0; i < SAMPLE_COUNT; i++) {
+        find_count = 0;
+        do {
+            for(j = 0; j < 1000; j++) {
+                found_at = 0;
+                do {
+                    found_at = StringScanner_scan(scan, &ALPHA);
+                    find_count++;
+                } while(found_at != -1);
+            }
+
+            elapsed = time(NULL) - start;
+        } while(elapsed <= TEST_TIME);
+        Stats_sample(st, (double)find_count);
+    }
+
+    Stats_dump(st);
+
+    StringScanner_destroy(scan);
+
+    return NULL;
+}
+
 char *all_tests() {
     mu_suite_start();
 
     mu_run_test(test_find_and_scan);
 
+#if 1
+    mu_run_test(test_samples);
+#endif
 #if 0
     mu_run_test(test_scan_performance);
     mu_run_test(test_find_performance);
