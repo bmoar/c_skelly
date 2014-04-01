@@ -13,7 +13,7 @@ typedef struct Stack {
 
 #define Stack_create() ((Stack *)List_create())
 
-#define Stack_destroy(A) (List_destroy((Stack *)A))
+#define Stack_destroy(A) (List_destroy((List *)A))
 
 #define Stack_push(A, D) (List_push((List *)A, D))
 
