@@ -21,7 +21,7 @@ endif
 
 
 CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude -DNDEBUG $(OPTFLAGS)
-LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS) -lrt
+LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS) -lrt -lm
 PREFIX?=/usr/local
 
 HEADERS=$(wildcard src/**/*.h src/*.h)
