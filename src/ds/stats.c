@@ -1,7 +1,4 @@
-#include <math.h>
 #include <ds/stats.h>
-#include <stdlib.h>
-#include <ds/debug.h>
 
 Stats *Stats_recreate(double sum, double sumsq, unsigned long n, double min, double max) {
     Stats *st = malloc(sizeof(Stats));
@@ -21,14 +18,6 @@ error:
 
 Stats *Stats_create() {
     return Stats_recreate(0.0, 0.0, 0L, 0.0, 0.0);
-}
-
-double Stats_mean(Stats *st)  {
-    return st->sum / st->n;
-}
-
-double Stats_stddev(Stats *st) {
-    return sqrt((st->sumsq - ( st->sum * st->sum / st->n)) / (st->n - 1));
 }
 
 void Stats_sample(Stats *st, double s) {
@@ -52,7 +41,7 @@ void Stats_sample(Stats *st, double s) {
 }
 
 void Stats_dump(Stats *st) {
-    fprintf(stderr, "sum: %f, sumsq: %f, n: %lu,  min: %f,  max: %f, mean: %f, stddev: %f",
+    fprintf(stderr, "sum: %f, sumsq: %f, n: %lu,  min: %f,  max: %f, mean: %f, stddev: %f\n",
             st->sum, st->sumsq, st->n, st->min, st->max,
             Stats_mean(st), Stats_stddev(st));
 }
