@@ -78,6 +78,7 @@ char *test_read_write() {
         mu_assert(bstrcmp(gets, data[i]) == 0, "Data did not match");
 
         bdestroy(data[i]);
+        bdestroy(gets);
     }
 
 
