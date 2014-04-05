@@ -144,6 +144,9 @@ int main(int argc, const char *argv[])
 
     }
 
+    RingBuffer_destroy(in_rb);
+    RingBuffer_destroy(sock_rb);
+
     return 0;
 
 error:
