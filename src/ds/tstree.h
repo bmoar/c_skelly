@@ -24,4 +24,6 @@ void TSTree_traverse(TSTree *node, TSTree_traverse_cb cb, void *data);
 
 void TSTree_destroy(TSTree *node);
 
+DArray *TSTree_collect(TSTree *root, char *prefix, size_t len);
+
 #endif

@@ -65,6 +65,22 @@ char *test_search_prefix()
     return NULL;
 }
 
+char *test_collect() {
+    void *res = NULL;
+    DArray *array = TSTree_collect(node, "TE", strlen("TE"));
+    mu_assert(DArray_count(array) == 2, "Wrong count for collect");
+
+    res = DArray_get(array, 0);
+    mu_assert(res == valueA, "Wrong item in collect");
+
+    res = DArray_get(array, 1);
+    mu_assert(res == value2, "Wrong item in collect");
+
+    DArray_destroy(array);
+
+    return NULL;
+}
+
 void TSTree_traverse_test_cb(void *value, void *data)
 {
     assert(value != NULL && "Should not get NULL value.");
@@ -93,6 +109,7 @@ char * all_tests() {
     mu_suite_start();
 
     mu_run_test(test_insert);
+    mu_run_test(test_collect);
     mu_run_test(test_search_exact);
     mu_run_test(test_search_prefix);
     mu_run_test(test_traverse);

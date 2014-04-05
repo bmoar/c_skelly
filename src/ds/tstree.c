@@ -24,6 +24,34 @@ void TSTree_destroy(TSTree *node) {
     free(node);
 }
 
+DArray *TSTree_collect(TSTree *root, char *prefix, size_t len) {
+    TSTree *node = root;
+    size_t i = 0;
+    DArray *array = DArray_create(sizeof(void *), 100);
+
+    while(i < len && node) {
+        if(prefix[i] < node->splitchar) {
+            node = node->low;
+        } else if(prefix[i] == node->splitchar) {
+            i++;
+            if(i < len) {
+                node = node->equal;
+            }
+        } else {
+            node = node->high;
+        }
+    }
+
+    while(node) {
+        if(node->value) {
+            DArray_push(array, node->value);
+        }
+        node = node->equal;
+    }
+
+    return array;
+}
+
 static inline TSTree *TSTree_insert_base(TSTree *root, TSTree *node, 
         const char *key, size_t len, void *value) {
     if(node == NULL) {
@@ -40,7 +68,7 @@ static inline TSTree *TSTree_insert_base(TSTree *root, TSTree *node,
         node->low = TSTree_insert_base(root, node->low, key, len, value);
     } else if(*key == node->splitchar) {
         if(len > 1) {
-            node->equal = TSTree_insert_base(root, node->equal, key+1, len - 1, value);
+            node->equal = TSTree_insert_base(root, node->equal, key + 1, len - 1, value);
         } else {
             assert(node->value == NULL && "Duplicate insert into tst.");
             node->value = value;
