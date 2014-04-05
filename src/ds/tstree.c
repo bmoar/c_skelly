@@ -25,6 +25,9 @@ void TSTree_destroy(TSTree *node) {
 }
 
 DArray *TSTree_collect(TSTree *root, char *prefix, size_t len) {
+    check(root, "Tried to collect from NULL TSTree");
+    check(prefix, "Tried to collect for a NULL prefix");
+
     TSTree *node = root;
     size_t i = 0;
     DArray *array = DArray_create(sizeof(void *), 100);
@@ -50,6 +53,9 @@ DArray *TSTree_collect(TSTree *root, char *prefix, size_t len) {
     }
 
     return array;
+
+error:
+    return NULL;
 }
 
 static inline TSTree *TSTree_insert_base(TSTree *root, TSTree *node, 
@@ -81,10 +87,19 @@ static inline TSTree *TSTree_insert_base(TSTree *root, TSTree *node,
 }
 
 TSTree *TSTree_insert(TSTree *node, const char *key, size_t len, void *value) {
+    check(key, "Tried to insert a NULL key");
+    check(value, "Tried to insert a NULL value into tree");
+
     return TSTree_insert_base(node, node, key, len, value);
+
+error:
+    return NULL;
 }
 
 void *TSTree_search(TSTree *root, const char *key, size_t len) {
+    check(key, "Tried to search for a NULL key");
+    check(len > 0, "Tried to search for a len < 1");
+
     TSTree *node = root;
     size_t i = 0;
 
@@ -106,12 +121,14 @@ void *TSTree_search(TSTree *root, const char *key, size_t len) {
     } else {
         return NULL;
     }
+
+error:
+    return NULL;
 }
 
 void *TSTree_search_prefix(TSTree *root, const char *key, size_t len) {
-    if(len == 0) {
-        return NULL;
-    }
+    check(key, "Tried to search for NULL key");
+    check(len > 0, "Tried to search for a len < 1");
 
     TSTree *node = root;
     TSTree *last = NULL;
@@ -142,9 +159,14 @@ void *TSTree_search_prefix(TSTree *root, const char *key, size_t len) {
     }
 
     return node ? node->value : NULL;
+
+error:
+    return NULL;
 }
 
 void TSTree_traverse(TSTree *node, TSTree_traverse_cb cb, void *data) {
+    check(cb, "Tried to traverse with a NULL callback");
+
     if(!node) {
         return;
     }
@@ -164,4 +186,7 @@ void TSTree_traverse(TSTree *node, TSTree_traverse_cb cb, void *data) {
     if(node->value) {
         cb(node->value, data);
     }
+
+error:
+    return;
 }
