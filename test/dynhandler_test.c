@@ -1,7 +1,7 @@
 #include "minunit.h"
 #include <ds/dynhandler.h>
 #include <ds/debug.h>
-#include <test/routes.h>
+#include <urlfor/routes.h>
 
 Handler *handler = NULL;
 TSTree *map = NULL;
@@ -24,8 +24,9 @@ char *test_destroy() {
 }
 
 char *test_call() {
+    bstring test_data = bfromcstr("TEST");
     Route *r = handler->module;
-    r->cb();
+    r->cb(test_data);
 
     return NULL;
 }

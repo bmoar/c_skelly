@@ -1,13 +1,20 @@
 #include <ds/tstree.h>
 #include <ds/bstrlib.h>
+#include <urlfor/routes.h>
+#include <ds/dynhandler.h>
 
 TSTree *add_route_data(TSTree *routes, bstring line) {
     struct bstrList *data = bsplit(line, ' ');
     check(data->qty == 2, "Line '%s' does not have two columns",
             bdata(line));
 
-    routes = TSTree_insert(routes, bdata(data->entry[0]), blength(data->entry[0]),
-            bstrcpy(data->entry[1]));
+    bstring cb_lib = bfromcstr("build/libcskelly.so");
+    bstring module_name = bfromcstr("our_routes");
+
+    Handler *h = DynHandler_create(data->entry[0], cb_lib, module_name);
+    h->data = bstrcpy(data->entry[1]);
+
+    routes = TSTree_insert(routes, bdata(data->entry[0]), blength(data->entry[0]), h);
 
     bstrListDestroy(data);
 
@@ -47,8 +54,8 @@ error:
     return NULL;
 }
 
-bstring match_url(TSTree *routes, bstring url) {
-    bstring route = TSTree_search(routes, bdata(url), blength(url));
+Handler *match_url(TSTree *routes, bstring url) {
+    Handler *route = TSTree_search(routes, bdata(url), blength(url));
 
     if(route == NULL) {
         printf("No exact match found, trying prefix.\n");
@@ -74,7 +81,9 @@ error:
 
 void bdestroy_cb(void *value, void *ignored) {
     (void)ignored;
-    bdestroy((bstring)value);
+    Handler *h = value;
+    bdestroy(h->data);
+    DynHandler_destroy(h);
 }
 
 void destroy_routes(TSTree *routes) {
@@ -85,7 +94,6 @@ void destroy_routes(TSTree *routes) {
 int main(int argc, const char *argv[])
 {
     bstring url = NULL;
-    bstring route = NULL;
     TSTree *routes = NULL;
     check(argc == 2, "USAGE: urlfor <urlfile>");
 
@@ -96,10 +104,11 @@ int main(int argc, const char *argv[])
         url = read_line("URL> ");
         check_debug(url != NULL, "goodbye.");
 
-        route = match_url(routes, url);
+        Handler *h = match_url(routes, url);
 
-        if(route) {
-            printf("MATCH: %s == %s\n", bdata(url), bdata(route));
+        if(h) {
+            Route *r = h->module;
+            r->cb(h->data);
         } else {
             printf("FAIL: %s\n", bdata(url));
         }

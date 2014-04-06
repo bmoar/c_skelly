@@ -16,6 +16,7 @@ typedef struct Handler {
     bstring module_name;
     void *lib;
     void *module;
+    void *data;
 } Handler;
 
 /*

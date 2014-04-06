@@ -6,7 +6,8 @@ static inline int DynHandler_link_handler(Handler *h) {
     h->lib = dlopen(bdata(h->cb_lib), RTLD_NOW);
     check(h->lib != NULL, "Failed to open library %s: %s", bdata(h->cb_lib), dlerror());
 
-    h->module = dlsym(h->lib, bdata(h->module_name));
+    char *mod_name = bdata(h->module_name);
+    h->module = dlsym(h->lib, mod_name);
     check(h->module != NULL, "Failed to find: %s in library %s: %s",
             bdata(h->module_name), bdata(h->cb_lib), dlerror());
 
