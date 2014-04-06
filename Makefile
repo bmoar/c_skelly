@@ -7,7 +7,7 @@ UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
 	TESTSCRIPT=./test/runtests.sh
 	MEMTEST=valgrind --track-origins=yes --leak-check=full --show-reachable=yes
-	PLAT_LIBS=
+	PLAT_LIBS= -ldl -lrt -lm -pthread
 	EXE_EXT=
 	SO_EXT=.so
 endif
@@ -20,8 +20,8 @@ ifeq ($(UNAME), MINGW32_NT-6.1)
 endif
 
 
-CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude -DNDEBUG -lm -pthread $(OPTFLAGS)
-LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS) -lrt -lm -pthread
+CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude -DNDEBUG $(OPTFLAGS)
+LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS)
 PREFIX?=/usr/local
 
 HEADERS=$(wildcard src/**/*.h src/*.h)
@@ -47,7 +47,7 @@ SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
 # The Target Build
 all: $(TARGET) $(SO_TARGET) test $(PROGRAMS)
 
-dev: CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude -lm -pthread $(OPTFLAGS) 
+dev: CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS) 
 dev: all
 
 $(TARGET): build $(HEADERS) $(OBJECTS)
@@ -79,7 +79,7 @@ $(TESTS): $(TEST_OBJ) $(TARGET)
 
 $(TEST_OBJ): $(TEST_H)
 
-$(PROGRAMS): $(TARGET)
+$(PROGRAMS): CFLAGS+= $(TARGET) $(SO_TARGET)
 
 memtest:
 	MEMTEST="$(MEMTEST)" $(MAKE) dev
