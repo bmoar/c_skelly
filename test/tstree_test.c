@@ -17,6 +17,9 @@ struct tagbstring test2 = bsStatic("TEST2");
 struct tagbstring test3 = bsStatic("TSET");
 struct tagbstring test4 = bsStatic("T");
 
+#pragma GCC diagnostic ignored "-Waddress"
+#pragma GCC diagnostic push
+
 char *test_insert() {
     node = TSTree_insert(node, bdata(&test1), blength(&test1), valueA);
     mu_assert(node != NULL, "Failed to insert into tst.");
@@ -104,6 +107,8 @@ char *test_destroy()
 
     return NULL;
 }
+
+#pragma GCC diagnostic pop
 
 char * all_tests() {
     mu_suite_start();
