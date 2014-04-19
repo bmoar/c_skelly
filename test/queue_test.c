@@ -24,7 +24,7 @@ char *test_send_recv() {
     int i = 0;
     for (i = 0; i < NUM_TESTS; i++) {
         Queue_send(queue, tests[i]);
-        mu_assert(Queue_peek(queue) == tests[0], "Wrong next value.");
+        mu_assert(Queue_peek(queue) == tests[i], "Wrong next value.");
     }
 
     mu_assert(Queue_count(queue) == NUM_TESTS, "Wrong count on send");
