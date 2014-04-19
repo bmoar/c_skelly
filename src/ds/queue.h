@@ -19,6 +19,6 @@ typedef struct Queue {
 
 #define Queue_recv(Q) (List_shift((List *)Q))
 
-#define Queue_peek(Q) (List_last(Q))
+#define Queue_peek(Q) (List_first(Q))
 
 #define Queue_count(Q) (List_count(Q))
