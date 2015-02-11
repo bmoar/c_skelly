@@ -45,7 +45,7 @@ TARGET=build/lib$(LIB_NAME).a
 SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
 
 # The Target Build
-all: $(TARGET) $(SO_TARGET) test $(PROGRAMS)
+all: $(TARGET) $(SO_TARGET) $(PROGRAMS) test 
 
 dev: CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS) 
 dev: all
@@ -79,7 +79,8 @@ $(TESTS): $(TEST_OBJ) $(TARGET)
 
 $(TEST_OBJ): $(TEST_H)
 
-$(PROGRAMS): CFLAGS+= $(TARGET) $(SO_TARGET)
+$(PROGRAMS): %.o: %.c
+	$(CC) $@.c -static $(CFLAGS) -l$(LIB_NAME) -Lbuild $(PLAT_LIBS) -o $@
 
 memtest:
 	MEMTEST="$(MEMTEST)" $(MAKE) dev
