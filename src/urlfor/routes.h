@@ -13,6 +13,6 @@ typedef struct Route {
 /*
  * Write the route data to stdout
  */
-void Route_stdout(bstring entry);
+void Route_stdout(bstring __attribute__((unused))entry);
 
 #endif
