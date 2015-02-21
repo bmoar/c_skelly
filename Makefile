@@ -100,8 +100,8 @@ install: all
 	install $(TARGET) $(DESTDIR)/$(PREFIX)/lib/
 
 # The Checker
-BADFUNCS='[^_.>a-zA-Z0-9] (str(n?cpy|n?cat|xfrm|n?dup|str|pbrk|tok|_)|stpn?cpy|a?sn?printf|byte_)'
+BADFUNCS='[^_.>a-zA-Z0-9](str(n?cpy|n?cat|xfrm|n?dup|str|pbrk|tok|_)|(stpn?cpy|a?sn?printf|byte_))'
 check:
 	@echo Files with potentially dangerous functions:
-	grep $(BADFUNCS) $(SOURCES) || true
+	grep -E $(BADFUNCS) $(SOURCES) || true
 
