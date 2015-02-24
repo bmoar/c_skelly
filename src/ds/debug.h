@@ -5,10 +5,6 @@
 #include <errno.h>
 #include <string.h>
 
-#ifdef NDEBUG
-#define debug(M, ...)
-#else
-
 #if __STDC_VERSION__ < 199901L
 # if __GNUC__ >= 2
 #	define __func__ __FUNCTION__
@@ -16,6 +12,10 @@
 #  define __func__ "<unknown>"
 # endif
 #endif
+
+#ifdef NDEBUG
+#define debug(M, ...)
+#else
 
 #define debug(M, ...) fprintf(stderr, "[DEBUG] (%s:%s:%d) " M "\n", __FILE__, __func__, __LINE__, ##__VA_ARGS__)
 #endif
