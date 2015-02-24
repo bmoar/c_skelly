@@ -57,6 +57,9 @@ $(TARGET): build $(HEADERS) $(OBJECTS)
 $(SO_TARGET): $(TARGET) $(OBJECTS)
 	$(CC) -shared -o $@ $(OBJECTS) $(LIBS)
 
+$(PROGRAMS): %.o: %.c
+	$(CC) $@.c -static $(CFLAGS) -l$(LIB_NAME) -Lbuild $(PLAT_LIBS) -o $@
+
 build:
 	@mkdir -p build
 	@mkdir -p bin
@@ -68,22 +71,20 @@ $(INCS): $(INC_H) $(INC_OBJ)
 	ranlib $@
 	
 # The Unit Tests
+# Make SO_TARGET because we have a unit test for dl{open,sym,close}
 .PHONY: test
 test: CFLAGS += $(TESTFLAGS)
-test: $(TESTS) 
+test: $(SO_TARGET) $(TESTS)
 	@touch ./test/tests.log
 	@TEST_PAT=*_test$(EXE_EXT) $(TESTSCRIPT)
+
+memtest:
+	MEMTEST="$(MEMTEST)" $(MAKE) dev
 
 $(TESTS): $(TEST_OBJ) $(TARGET)
 	$(CC) -o $@ $(patsubst %,%.o,$@) $(TARGET) $(LIBS)
 
 $(TEST_OBJ): $(TEST_H)
-
-$(PROGRAMS): %.o: %.c
-	$(CC) $@.c -static $(CFLAGS) -l$(LIB_NAME) -Lbuild $(PLAT_LIBS) -o $@
-
-memtest:
-	MEMTEST="$(MEMTEST)" $(MAKE) dev
 
 # The Cleaner
 clean:
