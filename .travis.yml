@@ -1,0 +1,6 @@
+language: c
+compiler:
+  - gcc
+  - clang
+# Change this to your needs
+script: make clean && make && make tests && make clean && make dev && make tests
