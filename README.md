@@ -1,5 +1,7 @@
 #Simple C project skeleton
 
+![travis-build-status](https://travis-ci.org/bmoar/c_skelly.svg?branch=master)
+
 Features
 ========
 
