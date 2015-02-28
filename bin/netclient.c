@@ -29,7 +29,7 @@ error:
     return 1;
 }
 
-int client_connect(char *host, char *port) {
+int client_connect(const char *host, const char *port) {
     int rc = 0;
     struct addrinfo *addr = NULL;
 
