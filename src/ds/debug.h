@@ -13,6 +13,8 @@
 # endif
 #endif
 
+# define _unused(x) (void)(x)
+
 #ifdef NDEBUG
 #define debug(M, ...)
 #else
