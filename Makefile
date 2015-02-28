@@ -38,14 +38,17 @@ INC_SRC=$(wildcard include/**/*.c include/*.c)
 INC_OBJ=$(patsubst %.c,%.o,$(INC_SRC))
 INCS=$(patsubst %.o,%.a,$(INC_OBJ))
 
-PROGRAMS_SRC=$(wildcard bin/*.c)
-PROGRAMS=$(patsubst %.c,%,$(PROGRAMS_SRC))
+PROGRAMS_H=$(wildcard bin/**/*.h bin/*.h)
+PROGRAMS_SRC=$(wildcard bin/**/*.c bin/*.c)
+PROGRAMS_OBJ=$(patsubst %.c,%.o,$(PROGRAMS_SRC))
+PROGRAMS=$(patsubst %.o,%,$(PROGRAMS_OBJ))
 
 TARGET=build/lib$(LIB_NAME).a
 SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
 
 # The Target Build
-all: $(TARGET) $(SO_TARGET) $(PROGRAMS) test 
+all: $(TARGET) $(SO_TARGET)
+all: $(PROGRAMS) test 
 
 dev: CFLAGS=-g -fPIC -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS) 
 dev: all
@@ -57,7 +60,7 @@ $(TARGET): build $(HEADERS) $(OBJECTS)
 $(SO_TARGET): $(TARGET) $(OBJECTS)
 	$(CC) -shared -o $@ $(OBJECTS) $(LIBS)
 
-$(PROGRAMS): %.o: %.c
+$(PROGRAMS): $(PROGRAMS_SRC) $(PROGRAMS_OBJ)
 	$(CC) $@.c -static $(CFLAGS) -l$(LIB_NAME) -Lbuild $(PLAT_LIBS) -o $@
 
 build:
