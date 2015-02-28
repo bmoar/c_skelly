@@ -102,13 +102,13 @@ static inline BSTreeNode *BSTree_getnode(BSTree *map, BSTreeNode *node, void *ke
         return node;
     } else if (cmp < 0) {
         if(node->left) {
-            BSTree_getnode(map, node->left, key);
+            return BSTree_getnode(map, node->left, key);
         } else {
             return NULL;
         }
     } else {
         if(node->right) {
-            BSTree_getnode(map, node->right, key);
+            return BSTree_getnode(map, node->right, key);
         } else {
             return NULL;
         }
