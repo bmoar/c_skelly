@@ -3,6 +3,7 @@
 #include <ds/darray_algos.h>
 
 static DArray *array = NULL;
+static int PERFORMANCE_FACTOR = 100000;
 static int *val1 = NULL;
 static int *val2 = NULL;
 
@@ -110,14 +111,14 @@ char *test_push_performance() {
     int rc = 0;
     mu_assert(DArray_count(array) == 1, "Should be empty DArray");
 
-    for(i = 0; i < 100000; i++) {
+    for(i = 0; i < PERFORMANCE_FACTOR; i++) {
         int *val = DArray_new(array);
         *val = 666;
         rc = DArray_push(array, val);
         mu_assert(rc != -1, "Push should not have failed");
     }
 
-    int *find_me = DArray_get(array, 100000);
+    int *find_me = DArray_get(array, PERFORMANCE_FACTOR);
     *find_me = 777;
 
     // why is there a hole in the darray :/
@@ -152,7 +153,7 @@ char *test_find_performance() {
     // assume darray is sorted
     mu_assert(rc == 0, "DArray should have sorted");
 
-    int *find_me = DArray_get(array, 100000);
+    int *find_me = DArray_get(array, PERFORMANCE_FACTOR);
     mu_assert(*find_me == 777, "find_me should exist in array");
 
     rc = DArray_find(array, find_me, integer_compare);
